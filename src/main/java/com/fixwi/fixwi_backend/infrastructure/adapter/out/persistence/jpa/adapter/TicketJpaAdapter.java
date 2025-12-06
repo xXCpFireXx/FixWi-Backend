@@ -38,12 +38,12 @@ public class TicketJpaAdapter implements TicketPersistencePort {
         Specification<TicketEntity> specification = (root, query, cb) -> cb.conjunction();
         if (status != null && !status.isEmpty()){
             specification = specification.and((root, query, cb) ->
-                    cb.equal(root.get("ticket").get("status"), status));
+                    cb.equal(root.get("status"), status));
         }
 
         if(category != null && !category.isEmpty()){
             specification = specification.and((root, query, cb) ->
-                    cb.like(cb.lower(root.get("name")), "%" + category.toLowerCase() + "%"));
+                    cb.like(cb.lower(root.get("category").get("name")), "%" + category.toLowerCase() + "%"));
         }
         return ticketJpaRepository.findAll(specification,pageable).map(ticketMapper::toDomain);
     }
