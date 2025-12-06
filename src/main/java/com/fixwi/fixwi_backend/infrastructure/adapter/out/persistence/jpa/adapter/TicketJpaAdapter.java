@@ -7,6 +7,8 @@ import com.fixwi.fixwi_backend.infrastructure.adapter.out.persistence.jpa.reposi
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class TicketJpaAdapter implements TicketPersistencePort {
@@ -24,5 +26,9 @@ public class TicketJpaAdapter implements TicketPersistencePort {
 
         // Mapeo la entidad guardada (ID y fechas actualizadas) de vuelta al dominio
         return ticketMapper.toDomain(savedEntity);
+    }
+    @Override
+    public Optional<Ticket> findTicketById(Long id) {
+        return ticketJpaRepository.findById(id).map(ticketMapper::toDomain);
     }
 }
