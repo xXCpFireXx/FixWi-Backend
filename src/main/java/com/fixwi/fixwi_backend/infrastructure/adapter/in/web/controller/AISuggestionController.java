@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/suggestions") // Nuevo endpoint específico para la IA
+@RequestMapping("/suggestions") // Nuevo endpoint específico para la IA
 @RequiredArgsConstructor
 public class AISuggestionController {
 
