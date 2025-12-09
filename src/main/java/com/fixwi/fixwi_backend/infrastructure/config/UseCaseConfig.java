@@ -1,7 +1,10 @@
 package com.fixwi.fixwi_backend.infrastructure.config;
 
+import com.fixwi.fixwi_backend.application.usecase.ai.FetchAISuggestionUseCase;
 import com.fixwi.fixwi_backend.application.usecase.ticket.CreateTicketUseCase;
+import com.fixwi.fixwi_backend.domain.ports.in.ai.FetchAISuggestionPort;
 import com.fixwi.fixwi_backend.domain.ports.in.ticket.CreateTicketPort;
+import com.fixwi.fixwi_backend.domain.ports.out.AISuggestionPort;
 import com.fixwi.fixwi_backend.domain.ports.out.CategoryPersistencePort;
 import com.fixwi.fixwi_backend.domain.ports.out.TicketPersistencePort;
 import com.fixwi.fixwi_backend.domain.ports.out.UserPersistencePort;
@@ -27,6 +30,12 @@ public class UseCaseConfig {
                 userPersistencePort,
                 categoryPersistencePort
         );
+    }
+
+    @Bean
+    public FetchAISuggestionPort fetchAISuggestionPort(AISuggestionPort aiSuggestionPort) {
+        // Este Use Case no requiere @Transactional ya que es solo lectura/llamada a API externa
+        return new FetchAISuggestionUseCase(aiSuggestionPort);
     }
 
 }
