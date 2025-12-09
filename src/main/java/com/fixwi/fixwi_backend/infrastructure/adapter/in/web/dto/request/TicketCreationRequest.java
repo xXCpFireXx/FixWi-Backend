@@ -19,6 +19,4 @@ public class TicketCreationRequest {
     @NotNull(message = "User ID is required")
     Long userId;
 
-    // Aca debemos poner lo de la IA con el campo description y categoryId
-
 }

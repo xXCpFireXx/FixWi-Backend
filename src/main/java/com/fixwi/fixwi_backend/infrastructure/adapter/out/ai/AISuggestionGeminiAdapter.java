@@ -1,5 +1,7 @@
 package com.fixwi.fixwi_backend.infrastructure.adapter.out.ai;
 
+import com.google.genai.Client;
+import com.google.genai.types.GenerateContentResponse;
 import com.fixwi.fixwi_backend.domain.ports.out.AISuggestionPort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -10,41 +12,51 @@ import java.util.concurrent.*;
 @Component
 public class AISuggestionGeminiAdapter implements AISuggestionPort {
 
-    private static final long AI_TIMEOUT_SECONDS = 3; // Timeout límite
+    private static final long AI_TIMEOUT_SECONDS = 15; // Timeout límite
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    // Aquí inyectarías la configuración de la clave API, si usaras una librería cliente real
-    @Value("${ai.suggestion.apiKey:default_key}")
+    @Value("${ai.suggestion.apiKey}")
     private String apiKey;
+
+    private final Client geminiClient;
+    private static final String MODEL_NAME = "gemini-2.5-flash";
+
+    public AISuggestionGeminiAdapter(@Value("${ai.suggestion.apiKey}") String apiKey) {
+        this.geminiClient = Client.builder().apiKey(apiKey).build();
+    }
+
+    private String getLocalFallbackSuggestion() {
+        return "1. [FALLBACK] Verifique si su software está actualizado.\n2. [FALLBACK] Reinicie el entorno de desarrollo (IDE).\n3. [FALLBACK] Revise que no haya conflictos de librerías en su PATH.";
+    }
 
     @Override
     public Optional<String> generateSuggestion(String problemDescription) {
 
-        // 1. Tarea que simula la llamada a la API del LLM
         Callable<String> aiTask = () -> {
-            // ** Código real de llamada a la API de LLM iría aquí **
 
-            // Simulación de respuesta exitosa y formateada como lista numerada (RF-07)
-            Thread.sleep(1500); // Simula 1.5 segundos de latencia
-            return String.format(
-                    "1. Reinicie la aplicación: Cierre y vuelva a abrir el programa.\\n2. Limpie el caché: Borre los archivos temporales de la aplicación.\\n3. Reinstale: Desinstale y vuelva a instalar el software afectado."
+            String prompt = String.format(
+                    "Eres un asistente de soporte de TI. Analiza el siguiente problema de software y genera una lista CONCISA y NUMERADA (de 3 a 5 pasos) de posibles pasos de solución para un desarrollador. Problema: %s",
+                    problemDescription
             );
+
+            GenerateContentResponse response = geminiClient.models.generateContent(
+                    MODEL_NAME,
+                    prompt,
+                    null
+            );
+            return response.text();
         };
 
-        // 2. Ejecutar la tarea con Timeout (RF-07)
         Future<String> future = executor.submit(aiTask);
         try {
+            // respuesta con el límite de tiempo
             String suggestion = future.get(AI_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-
-            // La sugerencia debe ser concisa y formateada (se usa \n para simular el formato de lista)
-            return Optional.of(suggestion.replace("\\n", "\n"));
+            return Optional.of(suggestion);
 
         } catch (TimeoutException e) {
-            // Maneja el Timeout: permite la continuación sin sugerencia (RF-07)
-            System.err.println("AI Suggestion service timed out.");
+            System.err.println("AI Suggestion service timed out. Allowing ticket submission.");
             return Optional.empty();
         } catch (Exception e) {
-            // Maneja Fallos: permite la continuación sin sugerencia (RF-07)
             System.err.println("AI Suggestion service failed: " + e.getMessage());
             return Optional.empty();
         } finally {

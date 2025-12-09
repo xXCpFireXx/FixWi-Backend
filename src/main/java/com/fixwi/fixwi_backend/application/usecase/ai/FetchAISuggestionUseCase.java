@@ -16,17 +16,13 @@ public class FetchAISuggestionUseCase implements FetchAISuggestionPort {
     @Override
     public Optional<String> fetchSuggestion(String categoryName, String description) {
 
-        // RF-07: El endpoint debe solo activarse si la categoría es "Software"
         if (!"SOFTWARE".equalsIgnoreCase(categoryName)) {
             return Optional.empty();
         }
 
-        // Validación básica
         if (description == null || description.trim().isEmpty()) {
             return Optional.empty();
         }
-
-        // Llama al puerto de AI. El adaptador se encarga de la latencia y el formato.
         return aiSuggestionPort.generateSuggestion(description);
     }
 }
