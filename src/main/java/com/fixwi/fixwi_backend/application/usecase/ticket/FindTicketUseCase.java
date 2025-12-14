@@ -21,6 +21,11 @@ public class FindTicketUseCase implements FindTicketPort {
     }
 
     @Override
+    public Page<Ticket> findAllForUser(Pageable pageable, String status, String category, String email) {
+        return ticketPersistencePort.findAllForUser(pageable, status, category, email);
+    }
+
+    @Override
     public Ticket findById(Long id) {
         return ticketPersistencePort.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket", id));

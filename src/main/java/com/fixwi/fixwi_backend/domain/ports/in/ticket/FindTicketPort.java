@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface FindTicketPort {
     Page<Ticket> findAll(Pageable pageable,String status,String category);
-   Ticket findById(Long id);
+    Page<Ticket> findAllForUser(Pageable pageable, String status, String category, String email);
+    Ticket findById(Long id);
 
 }

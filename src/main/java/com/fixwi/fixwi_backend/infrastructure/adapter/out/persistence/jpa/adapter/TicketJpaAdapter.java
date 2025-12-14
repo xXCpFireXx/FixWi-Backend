@@ -48,6 +48,26 @@ public class TicketJpaAdapter implements TicketPersistencePort {
         return ticketJpaRepository.findAll(specification,pageable).map(ticketMapper::toDomain);
     }
 
+    @Override
+    public Page<Ticket> findAllForUser(Pageable pageable, String status, String category, String email) {
+        Specification<TicketEntity> specification = (root, query, cb) -> cb.conjunction();
+
+        specification = specification.and((root, query, cb) ->
+                cb.equal(cb.lower(root.get("user").get("email")), email.toLowerCase()));
+
+        if (status != null && !status.isEmpty()) {
+            specification = specification.and((root, query, cb) ->
+                    cb.equal(root.get("status"), status));
+        }
+
+        if (category != null && !category.isEmpty()) {
+            specification = specification.and((root, query, cb) ->
+                    cb.like(cb.lower(root.get("category").get("name")), "%" + category.toLowerCase() + "%"));
+        }
+
+        return ticketJpaRepository.findAll(specification,pageable).map(ticketMapper::toDomain);
+    }
+
 
     @Override
     public Optional<Ticket> findById(Long id) {

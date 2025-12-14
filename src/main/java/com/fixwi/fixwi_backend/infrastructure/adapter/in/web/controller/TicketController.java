@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -77,11 +78,27 @@ public class TicketController {
 
     // List all tickets paginated and filter (if needed) by status and category
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'TI')")
     public ResponseEntity<?> getAllTickets(Pageable pageable,
                                            @RequestParam(required = false)String status,
                                            @RequestParam(required = false)String category)
     {
-        Page<Ticket> page = findTicketPort.findAll(pageable, status,category );
+
+
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isUser = authentication.getAuthorities().stream()
+                .anyMatch(auth-> "USER".equals(auth.getAuthority()));
+
+
+
+        Page<Ticket> page;
+        if(isUser){
+            String email = authentication.getName();
+            page = findTicketPort.findAllForUser(pageable, status,category, email);
+        }else {
+            page = findTicketPort.findAll(pageable, status,category );
+        }
         Page<TicketCreationResponse> response = page.map(ticketWebMapper::toResponse);
         return ResponseEntity.ok(response);
     }
