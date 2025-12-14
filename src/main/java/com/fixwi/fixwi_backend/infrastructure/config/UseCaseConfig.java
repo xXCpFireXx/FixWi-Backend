@@ -4,12 +4,16 @@ import com.fixwi.fixwi_backend.application.usecase.ai.FetchAISuggestionUseCase;
 import com.fixwi.fixwi_backend.application.usecase.ticket.CreateTicketUseCase;
 import com.fixwi.fixwi_backend.application.usecase.ticket.FindTicketUseCase;
 import com.fixwi.fixwi_backend.domain.ports.in.ai.FetchAISuggestionPort;
+import com.fixwi.fixwi_backend.domain.ports.in.auth.LoginPort;
 import com.fixwi.fixwi_backend.domain.ports.in.ticket.CreateTicketPort;
 import com.fixwi.fixwi_backend.domain.ports.in.ticket.FindTicketPort;
 import com.fixwi.fixwi_backend.domain.ports.out.AISuggestionPort;
 import com.fixwi.fixwi_backend.domain.ports.out.CategoryPersistencePort;
 import com.fixwi.fixwi_backend.domain.ports.out.TicketPersistencePort;
 import com.fixwi.fixwi_backend.domain.ports.out.UserPersistencePort;
+import com.fixwi.fixwi_backend.domain.ports.out.*;
+import com.fixwi.fixwi_backend.domain.ports.out.security.PasswordEncoderPort;
+import com.fixwi.fixwi_backend.domain.ports.out.security.TokenProviderPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,4 +49,15 @@ public class UseCaseConfig {
         return new FetchAISuggestionUseCase(aiSuggestionPort);
     }
 
+    @Bean
+    @Transactional
+    public LoginUseCase loginUseCase(PasswordEncoderPort passwordEncoder, TokenProviderPort tokenProvider, LoadUserPort loadUserPort) {
+        return new LoginUseCase(passwordEncoder, tokenProvider, loadUserPort);
+    }
+
+    @Bean
+    @Transactional
+    public SignupUseCase signupUseCase(SaveUserPort saveUserPort, LoadUserPort loadUserPort, PasswordEncoderPort passwordEncoder){
+        return new SignupUseCase(saveUserPort, loadUserPort, passwordEncoder);
+    }
 }
