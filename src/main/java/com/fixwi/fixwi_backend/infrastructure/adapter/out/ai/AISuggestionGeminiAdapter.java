@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 @Component
 public class AISuggestionGeminiAdapter implements AISuggestionPort {
 
-    private static final long AI_TIMEOUT_SECONDS = 15; // Timeout límite
+    private static final long AI_TIMEOUT_SECONDS = 10; // Timeout límite
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Value("${ai.suggestion.apiKey}")
