@@ -1,4 +1,4 @@
-package com.fixwi.fixwi_backend.infrastructure.security.exception;
+package com.fixwi.fixwi_backend.infrastructure.adapter.in.web.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

@@ -4,9 +4,15 @@ import com.fixwi.fixwi_backend.application.usecase.ai.FetchAISuggestionUseCase;
 import com.fixwi.fixwi_backend.application.usecase.auth.LoginUseCase;
 import com.fixwi.fixwi_backend.application.usecase.auth.SignupUseCase;
 import com.fixwi.fixwi_backend.application.usecase.ticket.CreateTicketUseCase;
+import com.fixwi.fixwi_backend.application.usecase.ticket.FindTicketUseCase;
 import com.fixwi.fixwi_backend.domain.ports.in.ai.FetchAISuggestionPort;
 import com.fixwi.fixwi_backend.domain.ports.in.auth.LoginPort;
 import com.fixwi.fixwi_backend.domain.ports.in.ticket.CreateTicketPort;
+import com.fixwi.fixwi_backend.domain.ports.in.ticket.FindTicketPort;
+import com.fixwi.fixwi_backend.domain.ports.out.AISuggestionPort;
+import com.fixwi.fixwi_backend.domain.ports.out.CategoryPersistencePort;
+import com.fixwi.fixwi_backend.domain.ports.out.TicketPersistencePort;
+import com.fixwi.fixwi_backend.domain.ports.out.UserPersistencePort;
 import com.fixwi.fixwi_backend.domain.ports.out.*;
 import com.fixwi.fixwi_backend.domain.ports.out.security.PasswordEncoderPort;
 import com.fixwi.fixwi_backend.domain.ports.out.security.TokenProviderPort;
@@ -32,6 +38,11 @@ public class UseCaseConfig {
                 userPersistencePort,
                 categoryPersistencePort
         );
+    }
+    @Bean
+    @Transactional
+    public FindTicketPort findTicketPort(TicketPersistencePort ticketPersistencePort){
+        return new FindTicketUseCase(ticketPersistencePort);
     }
 
     @Bean
