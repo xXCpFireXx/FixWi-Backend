@@ -1,6 +1,9 @@
 package com.fixwi.fixwi_backend.infrastructure.config;
 
 import com.fixwi.fixwi_backend.infrastructure.security.config.JwtAuthenticationFilter;
+import com.fixwi.fixwi_backend.infrastructure.security.exception.JwtAccessDeniedHandler; // <--- IMPORTAR
+import com.fixwi.fixwi_backend.infrastructure.security.exception.JwtAuthenticationEntryPoint; // <--- IMPORTAR
+import lombok.RequiredArgsConstructor; // Usamos Lombok para inyectar todo limpio
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,13 +21,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor // Esto inyectará los handlers automáticamente
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // <--- INYECTAR
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;         // <--- INYECTAR
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,8 +38,12 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/error").permitAll()
-
-                        //.anyRequest().authenticated()
+                        .anyRequest().authenticated()
+                )
+                // AQUI CONECTAMOS LOS HANDLERS PERSONALIZADOS
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
