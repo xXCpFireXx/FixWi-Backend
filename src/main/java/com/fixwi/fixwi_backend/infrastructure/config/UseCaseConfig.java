@@ -1,6 +1,8 @@
 package com.fixwi.fixwi_backend.infrastructure.config;
 
 import com.fixwi.fixwi_backend.application.usecase.ai.FetchAISuggestionUseCase;
+import com.fixwi.fixwi_backend.application.usecase.auth.LoginUseCase;
+import com.fixwi.fixwi_backend.application.usecase.auth.SignupUseCase;
 import com.fixwi.fixwi_backend.application.usecase.ticket.CreateTicketUseCase;
 import com.fixwi.fixwi_backend.application.usecase.ticket.FindTicketUseCase;
 import com.fixwi.fixwi_backend.domain.ports.in.ai.FetchAISuggestionPort;

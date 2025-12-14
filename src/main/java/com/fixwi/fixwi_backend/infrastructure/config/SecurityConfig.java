@@ -1,8 +1,8 @@
 package com.fixwi.fixwi_backend.infrastructure.config;
 
+import com.fixwi.fixwi_backend.infrastructure.adapter.in.web.exception.JwtAccessDeniedHandler;
+import com.fixwi.fixwi_backend.infrastructure.adapter.in.web.exception.JwtAuthenticationEntryPoint;
 import com.fixwi.fixwi_backend.infrastructure.security.config.JwtAuthenticationFilter;
-import com.fixwi.fixwi_backend.infrastructure.security.exception.JwtAccessDeniedHandler; // <--- IMPORTAR
-import com.fixwi.fixwi_backend.infrastructure.security.exception.JwtAuthenticationEntryPoint; // <--- IMPORTAR
 import lombok.RequiredArgsConstructor; // Usamos Lombok para inyectar todo limpio
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
