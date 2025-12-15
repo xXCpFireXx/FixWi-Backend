@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.Optional;
@@ -20,7 +21,7 @@ public class TicketJpaAdapter implements TicketPersistencePort {
 
     private final TicketJpaRepository ticketJpaRepository;
     private final TicketMapper ticketMapper;
-
+    @Transactional
     @Override
     public Ticket saveTicket(Ticket ticket) {
         // Mapeo el objeto de dominio a la entidad JPA
@@ -68,7 +69,7 @@ public class TicketJpaAdapter implements TicketPersistencePort {
         return ticketJpaRepository.findAll(specification,pageable).map(ticketMapper::toDomain);
     }
 
-
+    @Transactional(readOnly = true)
     @Override
     public Optional<Ticket> findById(Long id) {
         return ticketJpaRepository.findById(id).map(ticketMapper::toDomain);

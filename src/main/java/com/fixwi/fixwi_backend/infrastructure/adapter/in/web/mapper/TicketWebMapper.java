@@ -5,6 +5,7 @@ import com.fixwi.fixwi_backend.domain.model.Ticket;
 import com.fixwi.fixwi_backend.domain.model.User;
 import com.fixwi.fixwi_backend.infrastructure.adapter.in.web.dto.request.TicketCreationRequest;
 import com.fixwi.fixwi_backend.infrastructure.adapter.in.web.dto.response.TicketCreationResponse;
+import com.fixwi.fixwi_backend.infrastructure.adapter.in.web.dto.response.TicketStatusUpdateResponse;
 import org.springframework.stereotype.Component;
 
 // Mapper para convertir el DTO de entrada al Modelo de Dominio
@@ -46,4 +47,21 @@ public class TicketWebMapper {
                 domain.getCreateDate()
         );
     }
+    public TicketStatusUpdateResponse toStatusUpdateResponse(Ticket domain) {
+        if (domain == null) {
+            return null;
+        }
+
+        return new TicketStatusUpdateResponse(
+                domain.getId(),
+                domain.getTitle(),
+                domain.getDescription(),
+                domain.getStatus(),
+                domain.getCategory() != null ? domain.getCategory().getName() : null,
+                domain.getUser() != null ? domain.getUser().getId() : null,
+                domain.getCreateDate(),
+                domain.getUpdateDate()
+        );
+    }
+
 }

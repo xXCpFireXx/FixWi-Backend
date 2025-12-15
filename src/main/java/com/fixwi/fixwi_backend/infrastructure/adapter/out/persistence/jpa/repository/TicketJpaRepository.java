@@ -1,5 +1,6 @@
 package com.fixwi.fixwi_backend.infrastructure.adapter.out.persistence.jpa.repository;
 
+
 import com.fixwi.fixwi_backend.domain.model.Status;
 import com.fixwi.fixwi_backend.infrastructure.adapter.out.persistence.jpa.entity.TicketEntity;
 import org.springframework.data.domain.Page;

@@ -3,8 +3,11 @@ package com.fixwi.fixwi_backend.infrastructure.adapter.in.web.controller;
 import com.fixwi.fixwi_backend.domain.model.Ticket;
 import com.fixwi.fixwi_backend.domain.ports.in.ticket.CreateTicketPort;
 import com.fixwi.fixwi_backend.domain.ports.in.ticket.FindTicketPort;
+import com.fixwi.fixwi_backend.domain.ports.in.ticket.UpdateTicketStatusPort;
 import com.fixwi.fixwi_backend.infrastructure.adapter.in.web.dto.request.TicketCreationRequest;
+import com.fixwi.fixwi_backend.infrastructure.adapter.in.web.dto.request.TicketStatusUpdateRequest;
 import com.fixwi.fixwi_backend.infrastructure.adapter.in.web.dto.response.TicketCreationResponse;
+import com.fixwi.fixwi_backend.infrastructure.adapter.in.web.dto.response.TicketStatusUpdateResponse;
 import com.fixwi.fixwi_backend.infrastructure.adapter.in.web.mapper.TicketWebMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,6 +37,7 @@ public class TicketController {
 
     private final CreateTicketPort createTicketPort;
     private final FindTicketPort findTicketPort;
+    private final UpdateTicketStatusPort updateTicketStatusPort;
     private final TicketWebMapper ticketWebMapper;
 
     @Operation(
@@ -170,6 +174,33 @@ public class TicketController {
     public ResponseEntity<?> getById(@PathVariable Long id) {
         var eventResponse =  ticketWebMapper.toResponse(findTicketPort.findById(id));
         return ResponseEntity.ok(eventResponse);
+    }
+
+    @Operation(
+            summary = "Actualizar estado del ticket",
+            description = "Permite cambiar el estado de un ticket (ej. OPEN -> IN_PROGRESS).",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Estado actualizado correctamente",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = TicketStatusUpdateResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Estado inválido", content = @Content),
+            @ApiResponse(responseCode = "401", description = "No autenticado", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Prohibido (Solo ADMIN o TI pueden cambiar estados)", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Ticket no encontrado", content = @Content)
+    })
+
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TI')") // <--- SEGURIDAD: Solo Admin o TI
+    public ResponseEntity<TicketStatusUpdateResponse> updateStatus(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody TicketStatusUpdateRequest request) {
+
+        var updatedTicket = updateTicketStatusPort.updateStatus(id, request.getStatus());
+
+        var response = ticketWebMapper.toStatusUpdateResponse(updatedTicket);
+
+        return ResponseEntity.ok(response);
     }
 
 }
