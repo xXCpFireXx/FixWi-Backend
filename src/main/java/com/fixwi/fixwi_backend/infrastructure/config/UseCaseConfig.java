@@ -5,10 +5,11 @@ import com.fixwi.fixwi_backend.application.usecase.auth.LoginUseCase;
 import com.fixwi.fixwi_backend.application.usecase.auth.SignupUseCase;
 import com.fixwi.fixwi_backend.application.usecase.ticket.CreateTicketUseCase;
 import com.fixwi.fixwi_backend.application.usecase.ticket.FindTicketUseCase;
+import com.fixwi.fixwi_backend.application.usecase.ticket.TicketMetricsUseCase;
 import com.fixwi.fixwi_backend.domain.ports.in.ai.FetchAISuggestionPort;
-import com.fixwi.fixwi_backend.domain.ports.in.auth.LoginPort;
 import com.fixwi.fixwi_backend.domain.ports.in.ticket.CreateTicketPort;
 import com.fixwi.fixwi_backend.domain.ports.in.ticket.FindTicketPort;
+import com.fixwi.fixwi_backend.domain.ports.in.ticket.GetMetricsTicketUseCase;
 import com.fixwi.fixwi_backend.domain.ports.out.AISuggestionPort;
 import com.fixwi.fixwi_backend.domain.ports.out.CategoryPersistencePort;
 import com.fixwi.fixwi_backend.domain.ports.out.TicketPersistencePort;
@@ -61,5 +62,11 @@ public class UseCaseConfig {
     @Transactional
     public SignupUseCase signupUseCase(SaveUserPort saveUserPort, LoadUserPort loadUserPort, PasswordEncoderPort passwordEncoder){
         return new SignupUseCase(saveUserPort, loadUserPort, passwordEncoder);
+    }
+
+    @Bean
+    @Transactional
+    public GetMetricsTicketUseCase ticketMetrictsPort(TicketMetricsPort ticketMetricsPort){
+        return new TicketMetricsUseCase(ticketMetricsPort);
     }
 }
