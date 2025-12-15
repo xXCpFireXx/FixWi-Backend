@@ -3,6 +3,8 @@ package com.fixwi.fixwi_backend.infrastructure.adapter.out.persistence.jpa.entit
 import com.fixwi.fixwi_backend.domain.model.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class UserEntity {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(nullable = false, length = 20)
     private Role role;
 

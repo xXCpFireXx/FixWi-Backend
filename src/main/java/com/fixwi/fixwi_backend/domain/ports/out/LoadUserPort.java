@@ -4,6 +4,7 @@ import com.fixwi.fixwi_backend.domain.model.User;
 
 import java.util.Optional;
 
-public interface UserPersistencePort {
-    Optional<User> findUserById(Long id);
+public interface LoadUserPort {
+    Optional<User> loadUserByEmail(String email);
+    boolean existsByEmail(String email);
 }
