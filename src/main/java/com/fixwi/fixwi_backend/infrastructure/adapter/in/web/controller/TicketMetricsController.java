@@ -17,7 +17,7 @@ public class TicketMetricsController {
         this.getMetricsTicketUseCase = getMetricsTicketUseCase;
     }
 
-    w@PreAuthorize("hasAnyAuthority('ADMIN', 'TI')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TI')")
     @GetMapping()
     public ResponseEntity<TicketMetricsDTO> getGeneralMetrics() {
         TicketMetricsDTO metrics = getMetricsTicketUseCase.getGeneralMetrics();
