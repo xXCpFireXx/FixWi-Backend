@@ -2,7 +2,7 @@ package com.fixwi.fixwi_backend.domain.ports.in.ticket;
 
 import com.fixwi.fixwi_backend.domain.model.Ticket;
 
-// Puerto de entrada para el caso de uso de Creación de Tickets - interface para el service
+// Entry port for the Ticket Creation use case - interface for the service
 public interface CreateTicketPort {
 
     Ticket createTicket(Ticket ticketToCreate);

@@ -1,5 +1,6 @@
 package com.fixwi.fixwi_backend.application.usecase.ticket;
 
+import com.fixwi.fixwi_backend.domain.exception.ResourceNotFoundException;
 import com.fixwi.fixwi_backend.domain.model.Ticket;
 import com.fixwi.fixwi_backend.domain.model.Status;
 import com.fixwi.fixwi_backend.domain.ports.in.ticket.CreateTicketPort;
@@ -27,18 +28,18 @@ public class CreateTicketUseCase implements CreateTicketPort {
     public Ticket createTicket(Ticket ticketToCreate) {
 
         if (ticketToCreate.getUser() == null || ticketToCreate.getUser().getId() == null) {
-            throw new IllegalArgumentException("Ticket must be associated with a creator user ID.");
+            throw new ResourceNotFoundException("Ticket must be associated with a creator user ID.");
         }
 
         var userCreator = userPersistencePort.findUserById(ticketToCreate.getUser().getId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found: " + ticketToCreate.getUser().getId()));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + ticketToCreate.getUser().getId()));
 
         if (ticketToCreate.getCategory() == null || ticketToCreate.getCategory().getId() == null) {
-            throw new IllegalArgumentException("Ticket must have a Category ID.");
+            throw new ResourceNotFoundException("Ticket must have a Category ID.");
         }
 
         var category = categoryPersistencePort.findCategoryById(ticketToCreate.getCategory().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Category not found: " + ticketToCreate.getCategory().getId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found: " + ticketToCreate.getCategory().getId()));
 
         ticketToCreate.setStatus(Status.OPEN);
         ticketToCreate.setUser(userCreator);

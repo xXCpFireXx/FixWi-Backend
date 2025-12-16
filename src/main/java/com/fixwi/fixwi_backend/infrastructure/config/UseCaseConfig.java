@@ -24,8 +24,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
 
-// Clase de configuración que gestiona los Use Cases (Clases de Dominio/Aplicación)
-// inyectando las dependencias de Infraestructura
+// Configuration class that manages Use Cases (Domain/Application Classes)
+// injecting the Infrastructure dependencies
 @Configuration
 public class UseCaseConfig {
 
@@ -36,7 +36,7 @@ public class UseCaseConfig {
             UserPersistencePort userPersistencePort,
             CategoryPersistencePort categoryPersistencePort) {
 
-        // Se instancia la clase de lógica de negocio y paso los puertos inyectados
+        // The business logic class is instantiated, and I pass the injected ports.
         return new CreateTicketUseCase(
                 ticketPersistencePort,
                 userPersistencePort,
@@ -51,7 +51,7 @@ public class UseCaseConfig {
 
     @Bean
     public FetchAISuggestionPort fetchAISuggestionPort(AISuggestionPort aiSuggestionPort) {
-        // Este Use Case no requiere @Transactional ya que es solo lectura/llamada a API externa
+        // This use case does not require @Transactional since it is read-only/calls an external API.
         return new FetchAISuggestionUseCase(aiSuggestionPort);
     }
 

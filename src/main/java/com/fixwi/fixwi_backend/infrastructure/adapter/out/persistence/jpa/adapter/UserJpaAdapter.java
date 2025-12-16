@@ -22,7 +22,7 @@ public class UserJpaAdapter implements UserPersistencePort, LoadUserPort, SaveUs
     @Override
     public Optional<User> findUserById(Long id) {
         return userJpaRepository.findById(id)
-                // Si se encuentra la entidad mapeara a un objeto de dominio
+                // If the user entity is found, then it will mapper into a domain object
                 .map(userMapper::toDomain);
     }
 

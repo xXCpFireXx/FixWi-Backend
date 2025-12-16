@@ -17,8 +17,9 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
+    // Dependency to handle JWT creation, validation, and data extraction.
     private final JwtTokenProviderAdapter tokenProvider;
+    // Dependency to load user details based on the username (JWT subject).
     private final UserDetailsServiceImpl userDetailsService;
 
     public JwtAuthenticationFilter(JwtTokenProviderAdapter tokenProvider, UserDetailsServiceImpl userDetailsService) {
@@ -31,8 +32,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
+        // Attempt to extract the JWT token from the request header.
         String token = getTokenFromRequest(request);
 
+        // If a token is found, and it is valid (not null, not expired, correct signature).
         if (token != null && tokenProvider.validateToken(token)) {
             String username = tokenProvider.getUsernameFromToken(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -47,8 +50,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Helper method to extract the JWT from the 'Authorization' header.
+     * Expects the format: Bearer <token>.
+     */
     private String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
+        // Check if the header exists and if it starts with the "Bearer" prefix.
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }

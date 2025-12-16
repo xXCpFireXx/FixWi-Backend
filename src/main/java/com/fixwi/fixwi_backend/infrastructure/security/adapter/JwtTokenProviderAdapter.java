@@ -32,7 +32,7 @@ public class JwtTokenProviderAdapter implements TokenProviderPort {
         claims.put("role", user.getRole().name());
         claims.put("email", user.getEmail());
 
-        // 2. Construimos el token
+        // 2. Build the token
         return Jwts.builder()
                 .claims(claims)
                 .subject(user.getEmail())
@@ -42,7 +42,13 @@ public class JwtTokenProviderAdapter implements TokenProviderPort {
                 .compact();
     }
 
-    // --- Métodos de validación y utilidad ---
+    // --- Validation and Utility Methods ---
+
+    /**
+     * Validates the integrity and expiration of a JWT.
+     * @param token The JWT string to validate.
+     * @return True if the token is valid, false otherwise (expired, invalid signature).
+     */
 
     public boolean validateToken(String token) {
         try {
@@ -65,6 +71,9 @@ public class JwtTokenProviderAdapter implements TokenProviderPort {
         return claims.get(claimName, type);
     }
 
+    /**
+     * Generic method to resolve a claim using a function (e.g., Claims::getExpiration).
+     */
     private <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaims(token);
         return claimsResolver.apply(claims);
@@ -78,6 +87,10 @@ public class JwtTokenProviderAdapter implements TokenProviderPort {
                 .getPayload();
     }
 
+    /**
+     * Generates the SecretKey object from the string secret.
+     * Uses HMAC SHA to create a secure key.
+     */
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }

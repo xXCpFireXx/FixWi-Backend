@@ -2,10 +2,10 @@ package com.fixwi.fixwi_backend.domain.ports.out;
 
 import java.util.Optional;
 
-// Puerto de salida para la generacion de sugerencias con IA
-// Define el contrato de comunicación con el LLM, incluyendo el manejo de errores/timeout
+// Output port for generating suggestions with AI
+// Defines the communication contract with the LLM, including error/timeout handling
 public interface AISuggestionPort {
 
-    //Genera una lista de pasos de solución para un problema
+    //Generates a list of solution steps for a problem
     Optional<String> generateSuggestion(String problemDescription);
 }

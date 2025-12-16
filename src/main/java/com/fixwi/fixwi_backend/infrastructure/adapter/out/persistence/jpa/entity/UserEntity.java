@@ -26,7 +26,7 @@ public class UserEntity {
     @Column(nullable = false, unique = true, length = 200)
     private String email;
 
-    // contra encriptada
+    // encrypt password
     @Column(nullable = false, length = 100)
     private String password;
 

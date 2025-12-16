@@ -49,7 +49,7 @@ public class AISuggestionGeminiAdapter implements AISuggestionPort {
 
         Future<String> future = executor.submit(aiTask);
         try {
-            // respuesta con el límite de tiempo
+            // response with the time limit
             String suggestion = future.get(AI_TIMEOUT_SECONDS, TimeUnit.SECONDS);
             return Optional.of(suggestion);
 

@@ -26,7 +26,7 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor // Esto inyectará los handlers automáticamente
+@RequiredArgsConstructor // This will inject the handlers automatically
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -46,7 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 )
-                // AQUI CONECTAMOS LOS HANDLERS PERSONALIZADOS
+                // HERE WE CONNECT THE CUSTOM HANDLERS
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler)
@@ -60,13 +60,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Permite cualquier origen (Frontend en React, Angular, Postman, etc.)
+        // Allows any origin (Frontend in React, Angular, Postman, etc.)
         configuration.setAllowedOrigins(List.of("*"));
 
-        // Permite todos los métodos HTTP (GET, POST, PUT, DELETE, OPTIONS, etc.)
+        // Allow all HTTP methods (GET, POST, PUT, DELETE, OPTIONS, etc.)
         configuration.setAllowedMethods(List.of("*"));
 
-        // Permite todos los encabezados (Authorization, Content-Type, etc.)
+        // Allow all headers (Authorization, Content-Type, etc.)
         configuration.setAllowedHeaders(List.of("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

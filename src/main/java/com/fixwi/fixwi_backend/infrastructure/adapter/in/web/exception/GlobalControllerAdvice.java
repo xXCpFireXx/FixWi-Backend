@@ -25,7 +25,7 @@ import java.util.UUID;
 @Slf4j // Habilita el logging estructurado
 public class GlobalControllerAdvice {
 
-    // --- 1. Manejo de Errores de Negocio (Dominio) ---
+    // --- 1. Business (Domain) Error Handling ---
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ProblemDetail handleResourceNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
@@ -42,7 +42,7 @@ public class GlobalControllerAdvice {
         return buildProblemDetail(HttpStatus.BAD_REQUEST, ex.getMessage(), "business-rule-violation", request);
     }
 
-    // --- 2. Manejo de Seguridad y Auth ---
+// --- 2. Security and Auth Handling ---
 
     @ExceptionHandler({InvalidCredentialsException.class, BadCredentialsException.class})
     public ProblemDetail handleInvalidCredentials(Exception ex, HttpServletRequest request) {
@@ -51,13 +51,13 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
     public ProblemDetail handleAccessDenied(Exception ex, HttpServletRequest request) {
-        // Log para depuración (opcional)
-        log.warn("Acceso denegado capturado: {}", ex.getClass().getName());
+        // Log for debugging (optional)
+        log.warn("Access Denied captured: {}", ex.getClass().getName());
 
         return buildProblemDetail(HttpStatus.FORBIDDEN, "No tienes permisos para realizar esta acción", "access-denied", request);
     }
 
-    // --- 3. Manejo de Validaciones (@Valid) ---
+// --- 3. Validation Handling (@Valid) ---
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleValidationErrors(MethodArgumentNotValidException ex, HttpServletRequest request) {
@@ -70,33 +70,33 @@ public class GlobalControllerAdvice {
         return problemDetail;
     }
 
-    // --- 4. Fallback Global (Errores no controlados) ---
+// --- 4. Global Fallback (Uncontrolled Errors) ---
 
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGlobalException(Exception ex, HttpServletRequest request) {
-        log.error("Error inesperado [Clase: {}]: ", ex.getClass().getName(), ex);
+        log.error("Unexpected error [Class: {}]: ", ex.getClass().getName(), ex);
         return buildProblemDetail(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error interno inesperado", "internal-server-error", request);
     }
 
-    // --- Método Privado Constructor para estandarizar la respuesta ---
+// --- Private Builder Method for standardizing the response ---
 
     private ProblemDetail buildProblemDetail(HttpStatus status, String detail, String typeSuffix, HttpServletRequest request) {
-        // Generamos un ID de rastreo único (Trace ID)
+        // Generate a unique tracing ID (Trace ID)
         String traceId = UUID.randomUUID().toString();
 
-        // Log estructurado (lo verás en la consola)
-        log.error("Error capturado [TraceID: {}] - Status: {} - Error: {}", traceId, status.value(), detail);
+        // Structured Log (you will see it in the console)
+        log.error("Captured error [TraceID: {}] - Status: {} - Error: {}", traceId, status.value(), detail);
 
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(status, detail);
 
-        // Llenamos los campos estándar del RFC 7807
+        // Fill in standard RFC 7807 fields
         problem.setTitle(status.getReasonPhrase());
         problem.setType(URI.create("https://fixwi.com/errors/" + typeSuffix));
         problem.setInstance(URI.create(request.getRequestURI()));
 
-        // Campos personalizados adicionales
+        // Additional custom fields
         problem.setProperty("timestamp", LocalDateTime.now());
-        problem.setProperty("traceId", traceId); // Importante para soporte
+        problem.setProperty("traceId", traceId); // Important for support
 
         return problem;
     }

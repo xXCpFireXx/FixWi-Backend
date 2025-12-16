@@ -6,10 +6,10 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
-// puerto de salida, es la persistencia del ticket
+// output port, ticket persistence
 public interface TicketPersistencePort {
 
-    // esta linea guarda un ticket nuevo o existente en la bd
+    // this line saves a new or existing ticket in the database
     Ticket saveTicket(Ticket ticket);
     //GET
     Page<Ticket> findAll(Pageable pageable, String status, String category);

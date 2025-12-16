@@ -25,7 +25,7 @@ public class TicketEntity {
     @Column(nullable = false, length = 100)
     private String title;
 
-    // El lob se utiliza para descripciones largas
+    // The lob is used for long descriptions
     @Lob
     @Column(nullable = false)
     private String description;
@@ -39,12 +39,12 @@ public class TicketEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    // Muchos tickets pertenecen a una Categoría
+    // Many tickets belong to one category
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private CategoryEntity category;
 
-    // Fecha de creación estas se completan automaticamente al guardar
+    // The Creation date completed by itself
     @CreationTimestamp
     @Column(name = "create_date", nullable = false)
     private LocalDateTime createDate;

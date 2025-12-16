@@ -68,12 +68,12 @@ public class TicketController {
             )
             @Valid @RequestBody TicketCreationRequest request) {
 
-        // Mapeo DTO de Request a modelo de dominio
+        // Mapeo DTO from Request to domain model
         var ticketToCreate = ticketWebMapper.toDomain(request);
 
         var createdTicket = createTicketPort.createTicket(ticketToCreate);
 
-        // Mapeo del modelo del dominio a DTO de Response
+        // Mapper domain model to DTO from Response
         var response = ticketWebMapper.toResponse(createdTicket);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -191,7 +191,7 @@ public class TicketController {
     })
 
     @PatchMapping("/{id}/status")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'TI')") // <--- SEGURIDAD: Solo Admin o TI
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'TI')") // <--- SECURITY: Only TI and admin
     public ResponseEntity<TicketStatusUpdateResponse> updateStatus(
             @PathVariable("id") Long id,
             @Valid @RequestBody TicketStatusUpdateRequest request) {

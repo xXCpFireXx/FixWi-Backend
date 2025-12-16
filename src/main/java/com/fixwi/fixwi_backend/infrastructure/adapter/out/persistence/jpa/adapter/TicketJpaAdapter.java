@@ -24,19 +24,22 @@ public class TicketJpaAdapter implements TicketPersistencePort {
     @Transactional
     @Override
     public Ticket saveTicket(Ticket ticket) {
-        // Mapeo el objeto de dominio a la entidad JPA
+        // Map the domain object to the JPA entity
         var ticketEntity = ticketMapper.toEntity(ticket);
 
-        // Guardo la entidad en la bd
+        // Persist the entity in the database
         var savedEntity = ticketJpaRepository.save(ticketEntity);
 
-        // Mapeo la entidad guardada (ID y fechas actualizadas) de vuelta al dominio
+        // Map the saved entity (with updated ID and timestamps) back to the domain model
         return ticketMapper.toDomain(savedEntity);
     }
 
     @Override
     public Page<Ticket> findAll(Pageable pageable, String status, String category) {
+        // Start with a "no-op" specification (equivalent to TRUE), so we can safely AND additional filters
         Specification<TicketEntity> specification = (root, query, cb) -> cb.conjunction();
+
+        // Optional filter: if status is provided, restrict results to tickets with the given status
         if (status != null && !status.isEmpty()){
             specification = specification.and((root, query, cb) ->
                     cb.equal(root.get("status"), status));
@@ -46,6 +49,8 @@ public class TicketJpaAdapter implements TicketPersistencePort {
             specification = specification.and((root, query, cb) ->
                     cb.like(cb.lower(root.get("category").get("name")), "%" + category.toLowerCase() + "%"));
         }
+
+        // Execute the query with the composed specification and pagination, then map entities to domain objects
         return ticketJpaRepository.findAll(specification,pageable).map(ticketMapper::toDomain);
     }
 
