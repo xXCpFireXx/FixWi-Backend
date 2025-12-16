@@ -46,7 +46,7 @@ FixWi-Backend/
   - `/tickets` — ticket CRUD operations (secured)
   - `/metrics` — ticket metrics (secured for ADMIN/TI)
 
-- [Swagger Doc Link](https://fixwi-backend.onrender.com)  
+- [Swagger Doc Link](https://fixwi-backend.onrender.com/swagger-ui/index.html)  
   
     
 
